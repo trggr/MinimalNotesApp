@@ -1,0 +1,17 @@
+
+# Gradle
+.gradle/
+build/
+**/build/
+
+# Local databases & test files
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+
+# IDE settings
+.idea/
+*.iml
+.DS_Store
+
