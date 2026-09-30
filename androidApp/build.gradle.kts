@@ -1,21 +1,7 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.multiplatform)
-}
-
-kotlin {
-    androidTarget()
-    sourceSets {
-        val androidMain by getting {
-            dependencies {
-                implementation(project(":shared"))
-                implementation(libs.androidx.activity.compose)
-                implementation(libs.compose.ui)
-                implementation(libs.compose.material3)
-                implementation(libs.androidx.lifecycle.viewmodel.compose)
-            }
-        }
-    }
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
@@ -29,8 +15,27 @@ android {
         versionCode = 1
         versionName = "1.0"
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+
+    sourceSets.getByName("main") {
+        manifest.srcFile("src/androidMain/AndroidManifest.xml")
+        java.srcDirs("src/main/kotlin")
     }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+
+    kotlinOptions {
+        jvmTarget = "21"
+    }
+}
+
+dependencies {
+    implementation(project(":shared"))
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.material3)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
 }
