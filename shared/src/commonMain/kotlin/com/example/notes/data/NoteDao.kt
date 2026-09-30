@@ -9,6 +9,6 @@ interface NoteDao {
     @Query("SELECT * FROM notes ORDER BY timestamp DESC")
     suspend fun getAllNotes(): List<NoteEntity>
 
-    @Insert
+    @Insert(onConflict = androidx.room.OnConflictStrategy.REPLACE)
     suspend fun insertNote(note: NoteEntity)
 }
