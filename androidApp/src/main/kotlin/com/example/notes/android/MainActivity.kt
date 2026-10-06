@@ -64,7 +64,8 @@ fun NotesScreen(viewModel: MainViewModel) {
                 Card(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
                 ) {
-                    Text(text = note.content, modifier = Modifier.padding(16.dp))
+                    Text(text = note.formattedTimestamp, style = MaterialTheme.typography.bodySmall)
+                    Text(text = note.noteTxt, modifier = Modifier.padding(16.dp))
                 }
             }
         }
