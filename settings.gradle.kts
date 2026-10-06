@@ -14,5 +14,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "MinimalNotesApp"
-include(":shared")
 include(":androidApp")

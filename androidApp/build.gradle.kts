@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -16,11 +17,6 @@ android {
         versionName = "1.0"
     }
 
-    sourceSets.getByName("main") {
-        manifest.srcFile("src/androidMain/AndroidManifest.xml")
-        java.srcDirs("src/main/kotlin")
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
@@ -32,8 +28,9 @@ android {
 }
 
 dependencies {
-    implementation(project(":shared"))
     implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    
     implementation(libs.androidx.activity.compose)
     implementation(libs.compose.ui)
     implementation(libs.compose.material3)
