@@ -1,33 +1,36 @@
-Development & Build Cheat Sheet
+Minimal Notes App
 
-This project uses Gradle for building, testing, and deploying across the shared modules and Android application.
+A lightweight, transparent Android notes application built using Jetpack Compose and native SQLiteOpenHelper.
+Architecture
 
-Android Device Workflow
+    UI: Jetpack Compose (MainActivity + MainViewModel with Kotlin Flows)
 
-- Build, install, and launch debug APK on connected device:
-  ./gradlew :androidApp:installDebug
+    Persistence: Direct SQLiteOpenHelper with zero annotation processors or KMP build-complexity.
 
-- Clean build and fresh install (bypasses stale compiler caches):
-  ./gradlew clean :androidApp:installDebug --no-daemon
+This project uses Gradle for building, testing, and running the Android application.
 
-- Check connected ADB devices:
-  adb devices
+Build, install, and launch debug APK on a connected device:
 
-- View live Logcat logs filtered for the app:
-  adb logcat -s AndroidRuntime System.out com.example.notes
+    ./gradlew :androidApp:installDebug
 
-Linux & Shared Module Workflow
+Clean build and fresh install (bypasses stale compiler caches):
 
-- Run all tests across the project:
-  ./gradlew test
+    ./gradlew clean :androidApp:installDebug --no-daemon
 
-- Run tests specifically for the shared module:
-  ./gradlew :shared:test
+Check connected ADB devices:
 
-- Build all project targets without installing:
-  ./gradlew build
+    adb devices
 
-- Wipe all build artifacts and compiler caches:
-  ./gradlew clean
+View live Logcat logs filtered for the app:
 
-  
+    adb logcat -s AndroidRuntime System.out com.example.notes
+
+Build & Compilation Workflow
+
+Build project targets without installing:
+
+    ./gradlew :androidApp:compileReleaseKotlin
+
+Wipe all build artifacts and compiler caches:
+
+    ./gradlew clean

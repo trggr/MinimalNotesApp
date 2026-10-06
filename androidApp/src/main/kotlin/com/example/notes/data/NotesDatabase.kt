@@ -6,28 +6,40 @@ import android.database.sqlite.SQLiteOpenHelper
 
 data class Note(val id: Long, val content: String)
 
-class NotesDatabase(context: Context) : SQLiteOpenHelper(context, "notes.db", null, 1) {
+class NotesDatabase(context: Context) : SQLiteOpenHelper(context, "notes.db", null, 2)
+{
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
             """
-            CREATE TABLE notes (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                content TEXT NOT NULL
+            create table notes (
+                id      integer primary key autoincrement,
+                content text not null
             )
             """
         )
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS notes")
-        onCreate(db)
+        if (oldVersion < 2) {
+            db.execSQL("alter table notes rename to notes_old")
+            onCreate(db)
+
+            db.execSQL(
+                """
+                insert into notes (id, content) select id, content from notes_old
+                """
+            )
+
+        }
     }
 
     fun getAllNotes(): List<Note> {
         val notes = mutableListOf<Note>()
         val db = readableDatabase
-        db.rawQuery("SELECT id, content FROM notes ORDER BY id DESC", null).use { cursor ->
+        db
+        .rawQuery("select id, content from notes order by id desc", null)
+        .use { cursor ->
             val idIdx = cursor.getColumnIndex("id")
             val contentIdx = cursor.getColumnIndex("content")
             while (cursor.moveToNext()) {
@@ -39,6 +51,6 @@ class NotesDatabase(context: Context) : SQLiteOpenHelper(context, "notes.db", nu
 
     fun insertNote(content: String) {
         val db = writableDatabase
-        db.execSQL("INSERT INTO notes (content) VALUES (?)", arrayOf(content))
+        db.execSQL("insert into notes (content) values (?)", arrayOf(content))
     }
 }
