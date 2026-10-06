@@ -3,25 +3,18 @@ package com.example.notes.android
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.Room
+import com.example.notes.data.Note
 import com.example.notes.data.NotesDatabase
-import com.example.notes.data.NoteEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
-    private val db = Room.databaseBuilder(
-        application,
-        NotesDatabase::class.java,
-        "notes.db"
-    ).build()
+    private val db = NotesDatabase(application)
 
-    private val dao = db.noteDao()
-
-    private val _notes = MutableStateFlow<List<NoteEntity>>(emptyList())
-    val notes: StateFlow<List<NoteEntity>> = _notes.asStateFlow()
+    private val _notes = MutableStateFlow<List<Note>>(emptyList())
+    val notes: StateFlow<List<Note>> = _notes.asStateFlow()
 
     init {
         loadNotes()
@@ -29,13 +22,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun loadNotes() {
         viewModelScope.launch {
-            _notes.value = dao.getAllNotes()
+            _notes.value = db.getAllNotes()
         }
     }
 
     fun addNote(content: String) {
         viewModelScope.launch {
-            dao.insertNote(NoteEntity(content = content))
+            db.insertNote(content)
             loadNotes()
         }
     }

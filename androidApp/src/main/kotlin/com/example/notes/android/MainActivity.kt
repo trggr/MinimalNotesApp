@@ -56,7 +56,7 @@ fun NotesScreen(viewModel: MainViewModel) {
         }
 
         Spacer(modifier = Modifier.height(24.dp))
-        Divider()
+        HorizontalDivider()
         Spacer(modifier = Modifier.height(16.dp))
 
         LazyColumn(modifier = Modifier.weight(1f).fillMaxWidth()) {
@@ -64,7 +64,7 @@ fun NotesScreen(viewModel: MainViewModel) {
                 Card(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
                 ) {
-                    Text(text = note, modifier = Modifier.padding(16.dp))
+                    Text(text = note.content, modifier = Modifier.padding(16.dp))
                 }
             }
         }

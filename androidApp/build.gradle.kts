@@ -2,7 +2,6 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
-    id("com.google.devtools.ksp")
 }
 
 android {
@@ -25,12 +24,13 @@ android {
     kotlinOptions {
         jvmTarget = "21"
     }
+
+    sourceSets.getByName("main") {
+        java.srcDirs("src/main/kotlin")
+    }
 }
 
 dependencies {
-    implementation(libs.androidx.room.runtime)
-    ksp(libs.androidx.room.compiler)
-    
     implementation(libs.androidx.activity.compose)
     implementation(libs.compose.ui)
     implementation(libs.compose.material3)
