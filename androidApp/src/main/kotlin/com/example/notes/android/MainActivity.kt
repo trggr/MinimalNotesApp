@@ -94,7 +94,7 @@ fun notesScreen(viewModel: MainViewModel) {
 Card(modifier = Modifier.fillMaxWidth()) {
     Column(
         modifier = Modifier.padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp) // Tight gap between metadata and note
+        verticalArrangement = Arrangement.spacedBy(1.dp) // Tight gap between metadata and note
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
