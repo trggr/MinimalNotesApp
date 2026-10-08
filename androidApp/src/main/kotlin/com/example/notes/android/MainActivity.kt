@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.clickable
 
 class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModels()
@@ -87,74 +88,60 @@ fun notesScreen(viewModel: MainViewModel) {
             items(filteredNotes, key = { it.noteId }) { note ->
                 var confirmDelete by remember { mutableStateOf(false) }
 
-                Card(modifier = Modifier.fillMaxWidth()) {
-                    // Keep ALL your content inside this Column so things stack vertically
-                    Column(
-                        modifier = Modifier.padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        // The Top Metadata Row
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween, // Pushes text left, buttons right
-                            verticalAlignment = Alignment.CenterVertically // Keeps everything vertically aligned
-                        ) {
-                            // 1. Timestamp (Takes up remaining space on the left, scales down if needed)
-                            Text(
-                                text = note.formatCretTs,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.weight(1f), // Crucial: dynamically sizes text so it doesn't push buttons out
-                                maxLines = 1
-                            )
 
-                            // 2. Button Container (Keeps both buttons strictly together)
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                // Delete Button
-                                TextButton(
-                                    onClick = {
-                                        if (confirmDelete) viewModel.deleteNote(note.noteId) else confirmDelete = true
-                                    },
-                                    contentPadding = PaddingValues(
-                                        horizontal = 8.dp,
-                                        vertical = 0.dp
-                                    ), // Tiny padding to fit small spaces
-                                    modifier = Modifier.defaultMinSize(
-                                        minWidth = 1.dp,
-                                        minHeight = 1.dp
-                                    ) // Removes huge default button sizing
-                                ) {
-                                    Text(
-                                        text = if (confirmDelete) "Confirm?" else "Delete",
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.error
-                                    )
-                                }
+// ... inside your items() block ...
 
-                                // Copy Button
-                                TextButton(
-                                    onClick = { clipboardManager.setText(AnnotatedString(note.noteTxt)) },
-                                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
-                                    modifier = Modifier.defaultMinSize(minWidth = 1.dp, minHeight = 1.dp)
-                                ) {
-                                    Text(
-                                        text = "Copy",
-                                        style = MaterialTheme.typography.bodySmall
-                                    )
-                                }
-                            }
-                        }
-
-                        // 3. The actual note text (Now safely inside the Column below the metadata row)
-                        Text(
-                            text = note.noteTxt,
-                            style = MaterialTheme.typography.bodyMedium
-                        )
+Card(modifier = Modifier.fillMaxWidth()) {
+    Column(
+        modifier = Modifier.padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp) // Tight gap between metadata and note
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // 1. Timestamp takes remaining left space
+            Text(
+                text = note.formatCretTs,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.weight(1f),
+                maxLines = 1
+            )
+            
+            // 2. Clear, simple text links acting as buttons
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) { // Space between items
+                Text(
+                    text = if (confirmDelete) "Confirm?" else "Delete",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.clickable { 
+                        if (confirmDelete) viewModel.deleteNote(note.noteId) else confirmDelete = true 
                     }
-                }
+                )
+                Text(
+                    text = "Copy",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.secondary, // Or any color you prefer
+                    modifier = Modifier.clickable { 
+                        clipboardManager.setText(AnnotatedString(note.noteTxt)) 
+                    }
+                )
+            }
+        }
+
+        // 3. Main Note Content
+        Text(
+            text = note.noteTxt, 
+            style = MaterialTheme.typography.bodyMedium
+        )
+    }
+}
+
+
+
+
             }
         }
     }
