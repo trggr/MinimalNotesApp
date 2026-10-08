@@ -11,7 +11,7 @@ This project uses Gradle for building, testing, and running the Android applicat
 
 Build, install, and launch debug APK on a connected device:
 
-    ./gradlew :androidApp:installDebug
+    ./gradlew :androidApp:installDebug --build-cache
 
 Clean build and fresh install (bypasses stale compiler caches):
 

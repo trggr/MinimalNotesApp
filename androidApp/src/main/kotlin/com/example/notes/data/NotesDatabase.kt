@@ -7,12 +7,9 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
 
-data class Note(
-    val noteId: Long,
-    val noteTxt: String,
-    val cretTs: String?
-) {
-    val formattedTimestamp: String
+data class Note(val noteId: Long, val noteTxt: String, val cretTs: String?)
+{
+    val formatCretTs: String
         get() {
             if (cretTs.isNullOrEmpty()) return ""
             return try {
@@ -31,7 +28,7 @@ data class Note(
         }
 }
 
-class NotesDatabase(context: Context) : SQLiteOpenHelper(context, "notes.db", null, 6) {
+class NotesDatabase(context: Context) : SQLiteOpenHelper(context, "notes.db", null, 4) {
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
@@ -63,27 +60,24 @@ class NotesDatabase(context: Context) : SQLiteOpenHelper(context, "notes.db", nu
 
     fun getAllNotes(): List<Note> {
         val notes = mutableListOf<Note>()
-        val db = readableDatabase
-        db
-        .rawQuery("select note_id, note_txt, cret_ts from note order by note_id desc", null)
-        .use { cursor ->
-            val idIdx = cursor.getColumnIndex("note_id")
-            val contentIdx = cursor.getColumnIndex("note_txt")
-            val tsIdx = cursor.getColumnIndex("cret_ts")
-            while (cursor.moveToNext()) {
-                notes.add(Note(cursor.getLong(idIdx), cursor.getString(contentIdx), cursor.getString(tsIdx)))
+        readableDatabase
+            .rawQuery("select note_id, note_txt, cret_ts from note order by note_id desc", null)
+            .use { c ->
+                while (c.moveToNext()) {
+                    notes.add(Note(
+                        c.getLong(c.getColumnIndex("note_id")),
+                        c.getString(c.getColumnIndex("note_txt")),
+                        c.getString(c.getColumnIndex("cret_ts"))))
             }
         }
         return notes
     }
 
-    fun insertNote(noteTxt: String) {
-        val db = writableDatabase
-        db.execSQL("insert into note (note_txt) values (?)", arrayOf(noteTxt))
+    fun insertNote(s: String) {
+        writableDatabase.execSQL("insert into note (note_txt) values (?)", arrayOf(s))
     }
 
-    fun deleteNote(noteId: Long) {
-        val db = writableDatabase
-        db.delete("note", "note_id = ?", arrayOf(noteId.toString()))
+    fun deleteNote(n: Long) {
+        writableDatabase.delete("note", "note_id = ?", arrayOf(n.toString()))
     }
 }

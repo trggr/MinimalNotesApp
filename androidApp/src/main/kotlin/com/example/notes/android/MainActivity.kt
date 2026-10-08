@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    NotesScreen(viewModel)
+                    notesScreen(viewModel)
                 }
             }
         }
@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun NotesScreen(viewModel: MainViewModel) {
+fun notesScreen(viewModel: MainViewModel) {
     val notes by viewModel.notes.collectAsState()
     var textInput by remember { mutableStateOf("") }
     var searchQuery by remember { mutableStateOf("") }
@@ -48,23 +48,15 @@ fun NotesScreen(viewModel: MainViewModel) {
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Spacer(modifier = Modifier.height(24.dp))
         Text("Minimal Notes", style = MaterialTheme.typography.headlineMedium)
         
         Spacer(modifier = Modifier.height(16.dp))
-        OutlinedTextField(
-            value = textInput,
-            onValueChange = { textInput = it },
-            label = { Text("Enter a note...") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 100.dp, max = 180.dp)
-        )
+        OutlinedTextField(value = textInput,
+                          onValueChange = { textInput = it },
+                          label = { Text("Enter a note...") },
+                          modifier = Modifier.fillMaxWidth().heightIn(min = 100.dp, max = 180.dp))
         
         Spacer(modifier = Modifier.height(8.dp))
         Button(
@@ -93,33 +85,22 @@ fun NotesScreen(viewModel: MainViewModel) {
         HorizontalDivider()
         Spacer(modifier = Modifier.height(16.dp))
 
-        LazyColumn(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()
-        ) {
+        LazyColumn(modifier = Modifier.weight(1f).fillMaxWidth()) {
             items(filteredNotes, key = { it.noteId }) { note ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp)
-                ) {
+                Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
                     var confirmDelete by remember { mutableStateOf(false) }
 
                     Column(modifier = Modifier.padding(16.dp)) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
+                        Row( modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text(
-                                text = note.formattedTimestamp,
+                            Text(text = note.formatCretTs,
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.primary
                             )
                             
                             Row {
-                                TextButton(
-                                    onClick = {
+                                TextButton( onClick = {
                                         if (confirmDelete) {
                                             viewModel.deleteNote(note.noteId)
                                         } else {
@@ -128,8 +109,7 @@ fun NotesScreen(viewModel: MainViewModel) {
                                     },
                                     contentPadding = PaddingValues(0.dp)
                                 ) {
-                                    Text(
-                                        text = if (confirmDelete) "Confirm?" else "Delete",
+                                    Text( text = if (confirmDelete) "Confirm?" else "Delete",
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.error
                                     )
