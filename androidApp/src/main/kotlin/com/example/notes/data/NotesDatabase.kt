@@ -28,7 +28,7 @@ data class Note(val noteId: Long, val noteTxt: String, val cretTs: String?)
         }
 }
 
-class NotesDatabase(context: Context) : SQLiteOpenHelper(context, "notes.db", null, 4) {
+class NotesDatabase(context: Context) : SQLiteOpenHelper(context, "notes.db", null, 6) {
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
@@ -43,7 +43,7 @@ class NotesDatabase(context: Context) : SQLiteOpenHelper(context, "notes.db", nu
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        if (oldVersion < 4) {
+        if (oldVersion < 6) {
             db.execSQL("drop table if exists notes_old")
             db.execSQL("alter table notes rename to notes_old")
             onCreate(db)
